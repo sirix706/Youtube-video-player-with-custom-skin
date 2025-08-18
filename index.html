@@ -21,29 +21,27 @@
 
   <button id="yt-scrim" class="yt-scrim" aria-label="Toggle playback"></button>
 
-
-
   <div class="yt-mask-bottom"></div>
   <div class="yt-mask-top"></div>
 </div>
 
 <style>
   :root{
-    --brand:#02D3AB;      /* change this to update button color */
-    --btn-radius:12px;    /* rounded-corner rectangle */
+    --brand:#02D3AB;
+    --btn-radius:12px;
     --mask-top:64px;
     --mask-br-w:120px;
     --mask-br-h:72px;
     --focus:#7fd;
   }
 
+  /* ORIGINAL STYLES */
   .youtube-shell{ position:relative; width:100%; max-width:960px; margin:0 auto;
     border-radius:14px; overflow:hidden; background:#000; }
   .youtube-frame-wrap{ position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; }
   .youtube-frame-wrap iframe{ position:absolute; inset:0; width:360%; height:100%; margin-left:-130%;
     border:0; pointer-events:none; z-index:0; }
 
-  /* Poster cover */
   .yt-cover{ position:absolute; inset:0; z-index:2;
     background:
       radial-gradient(ellipse at center, rgba(0,0,0,.35), rgba(0,0,0,.55)),
@@ -51,7 +49,6 @@
     opacity:0; pointer-events:none; transition:opacity .18s ease; }
   .youtube-shell.paused .yt-cover{ opacity:1; }
 
-  /* Play button - responsive */
   .yt-btn{
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     background:var(--brand); color:#fff; border:0; cursor:pointer; z-index:4;
@@ -62,12 +59,10 @@
   }
   .yt-btn svg{ width:32px; height:32px; }
 
-  /* Tablet */
   @media (max-width: 991px){
     .yt-btn{ width:80px; height:50px; }
     .yt-btn svg{ width:28px; height:28px; }
   }
-  /* Mobile */
   @media (max-width: 576px){
     .yt-btn{ width:64px; height:40px; }
     .yt-btn svg{ width:24px; height:24px; }
@@ -76,27 +71,30 @@
   .yt-btn:hover{ transform:translate(-50%,-50%) scale(1.04); }
   .yt-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
 
-  /* Click-anywhere layer on top so clicks still work */
   .yt-scrim{ position:absolute; inset:0; background:transparent; border:0; cursor:pointer; z-index:5; }
   .yt-scrim:focus-visible{ outline:3px solid var(--focus); outline-offset:-3px; }
 
-  /* Hide big button while playing */
-  .youtube-shell.playing .yt-btn{ opacity:0; pointer-events:none; }
-
-  /* Mini chip while playing */
- 
-
   .yt-mask-bottom{ position:absolute; right:0; bottom:0; width:var(--mask-br-w); height:var(--mask-br-h);
     background:linear-gradient(135deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 75%); pointer-events:none; z-index:1; }
-  .yt-mask-bottom{
-  display: none !important;
-  }
+  .yt-mask-bottom{ display:none !important; }
   .yt-mask-top{ position:absolute; left:0; top:0; width:100%; height:var(--mask-top);
     background:linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,0)); pointer-events:none; z-index:1; }
-    
 
   @media (prefers-reduced-motion: reduce){
-    .yt-btn, .yt-chip{ transition:none; }
+    .yt-btn{ transition:none; }
+  }
+
+  /* ---------- FIX: make video full-width on desktop & remove black gutters ---------- */
+  .youtube-shell{
+    max-width:none !important;
+    width:100% !important;
+    margin:0 !important;
+    background:transparent !important;
+  }
+  .youtube-frame-wrap iframe{
+    width:100% !important;
+    height:100% !important;
+    margin-left:0 !important;
   }
 </style>
 
@@ -128,7 +126,7 @@
 
     btn.addEventListener('click', toggle);
     scrim.addEventListener('click', toggle);
-    chip.addEventListener('click', toggle);
+    if(chip) chip.addEventListener('click', toggle);
 
     const keyHandler = (e) => {
       const k = e.key.toLowerCase();
@@ -149,14 +147,14 @@
       shell.classList.remove('paused');
       btn.setAttribute('aria-label','Pause video');
       btn.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="white"/></svg>';
-      chip.hidden = false; chip.innerHTML = '<span class="chip-icon">⏸</span> Pause';
-    } else if(e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.CUED){
+      if(chip){ chip.hidden = false; chip.innerHTML = '<span class="chip-icon">⏸</span> Pause'; }
+    } else {
       isPlaying = false;
       shell.classList.remove('playing');
       shell.classList.add('paused');
       btn.setAttribute('aria-label','Play video');
       btn.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="white"/></svg>';
-      chip.hidden = false; chip.innerHTML = '<span class="chip-icon">▶</span> Play';
+      if(chip){ chip.hidden = false; chip.innerHTML = '<span class="chip-icon">▶</span> Play'; }
     }
   }
 </script>
