@@ -1,103 +1,97 @@
-<!-- SHELL unchanged -->
-<div class="youtube-shell" data-style="circle">
-  <div class="youtube-frame-wrap">
+<!-- SHELL renamed -->
+<div class="custom-yt-shell" data-style="circle">
+  <div class="custom-yt-frame-wrap">
     <iframe
-      id="yt-player"
+      id="custom-yt-player"
       src="https://www.youtube.com/embed/oIraPrfybhA?autoplay=1&mute=1&loop=1&playlist=oIraPrfybhA&color=white&controls=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1&showinfo=0&fs=0"
       title="Video" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen loading="lazy">
     </iframe>
 
-    <div class="yt-cover" aria-hidden="true"></div>
+    <div class="custom-yt-cover" aria-hidden="true"></div>
   </div>
 
   <!-- Big center button -->
-  <button id="yt-toggle" class="yt-btn" aria-label="Play video">
+  <button id="custom-yt-toggle" class="custom-yt-btn" aria-label="Play video">
     <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M8 5v14l11-7z" fill="white"></path>
     </svg>
   </button>
 
-  <button id="yt-scrim" class="yt-scrim" aria-label="Toggle playback"></button>
+  <button id="custom-yt-scrim" class="custom-yt-scrim" aria-label="Toggle playback"></button>
 
+  <div class="custom-yt-mask-bottom"></div>
+  <div class="custom-yt-mask-top"></div>
 
-
-  <div class="yt-mask-bottom"></div>
-  <div class="yt-mask-top"></div>
+  <!-- Fake input -->
+  <input type="text" id="fakeInput" style="position:absolute;left:-9999px;opacity:0;" />
 </div>
 
 <style>
   :root{
-    --brand:#02D3AB;      /* change this to update button color */
-    --btn-radius:12px;    /* rounded-corner rectangle */
+    --brand:#02D3AB;
+    --btn-radius:12px;
     --mask-top:64px;
     --mask-br-w:120px;
     --mask-br-h:72px;
     --focus:#7fd;
   }
 
-  .youtube-shell{ position:relative; width:100%; max-width:1300px; margin:0 auto;
+  .custom-yt-shell{ position:relative; width:100%; margin:0 auto;
     border-radius:14px; overflow:hidden; background:#000; }
-  .youtube-frame-wrap{ position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; }
-  .youtube-frame-wrap iframe{ position:absolute; inset:0; width:360%; height:100%; margin-left:-130%;
+  .custom-yt-frame-wrap{ position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; }
+  .custom-yt-frame-wrap iframe{ position:absolute; inset:0; width:360%; height:100%; margin-left:-130%;
     border:0; pointer-events:none; z-index:0; }
 
   /* Poster cover */
-  .yt-cover{ position:absolute; inset:0; z-index:2;
+  .custom-yt-cover{ position:absolute; inset:0; z-index:2;
     background:
       radial-gradient(ellipse at center, rgba(0,0,0,.35), rgba(0,0,0,.55)),
       url("https://i.ytimg.com/vi/oIraPrfybhA/hqdefault.jpg") center/cover no-repeat;
     opacity:0; pointer-events:none; transition:opacity .18s ease; }
-  .youtube-shell.paused .yt-cover{ opacity:1; }
+  .custom-yt-shell.paused .custom-yt-cover{ opacity:1; }
 
-  /* Play button - responsive */
-  .yt-btn{
+  /* Play button */
+  .custom-yt-btn{
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     background:var(--brand); color:#fff; border:0; cursor:pointer; z-index:4;
-    box-shadow:0 8px 24px rgba(0,0,0,.28);
-    transition:transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+    transition:transform .18s ease, opacity .18s ease;
     width:115px; height:69px; border-radius:var(--btn-radius);
     display:flex; align-items:center; justify-content:center; padding:0;
   }
-  .yt-btn svg{ width:32px; height:32px; }
+  .custom-yt-btn svg{ width:32px; height:32px; }
 
   /* Tablet */
   @media (max-width: 991px){
-    .yt-btn{ width:80px; height:50px; }
-    .yt-btn svg{ width:28px; height:28px; }
+    .custom-yt-btn{ width:80px; height:50px; }
+    .custom-yt-btn svg{ width:28px; height:28px; }
   }
   /* Mobile */
   @media (max-width: 576px){
-    .yt-btn{ width:64px; height:40px; }
-    .yt-btn svg{ width:24px; height:24px; }
+    .custom-yt-btn{ width:64px; height:40px; }
+    .custom-yt-btn svg{ width:24px; height:24px; }
   }
 
-  .yt-btn:hover{ transform:translate(-50%,-50%) scale(1.04); }
-  .yt-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
+  .custom-yt-btn:hover{ transform:translate(-50%,-50%) scale(1.04); }
+  .custom-yt-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
+  .custom-yt-mask-bottom,
+  .custom-yt-mask-top {
+    display: none !important;
+  }
 
-  /* Click-anywhere layer on top so clicks still work */
-  .yt-scrim{ position:absolute; inset:0; background:transparent; border:0; cursor:pointer; z-index:5; }
-  .yt-scrim:focus-visible{ outline:3px solid var(--focus); outline-offset:-3px; }
+  /* Click-anywhere layer */
+  .custom-yt-scrim{ position:absolute; inset:0; background:transparent; border:0; cursor:pointer; z-index:5; }
+  .custom-yt-scrim:focus-visible{ outline:3px solid var(--focus); outline-offset:-3px; }
 
   /* Hide big button while playing */
-  .youtube-shell.playing .yt-btn{ opacity:0; pointer-events:none; }
+  .custom-yt-shell.playing .custom-yt-btn{ opacity:0; pointer-events:none; }
 
-  /* Mini chip while playing */
- 
-
-  .yt-mask-bottom{ position:absolute; right:0; bottom:0; width:var(--mask-br-w); height:var(--mask-br-h);
+  /* Gradient masks */
+  .custom-yt-mask-bottom{ position:absolute; right:0; bottom:0; width:var(--mask-br-w); height:var(--mask-br-h);
     background:linear-gradient(135deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 75%); pointer-events:none; z-index:1; }
-  .yt-mask-bottom{
-  display: none !important;
-  }
-  .yt-mask-top{ position:absolute; left:0; top:0; width:100%; height:var(--mask-top);
+  .custom-yt-mask-top{ position:absolute; left:0; top:0; width:100%; height:var(--mask-top);
     background:linear-gradient(180deg, rgba(0,0,0,.7), rgba(0,0,0,0)); pointer-events:none; z-index:1; }
-    
-
-  @media (prefers-reduced-motion: reduce){
-    .yt-btn, .yt-chip{ transition:none; }
-  }
 </style>
 
 <script>
@@ -110,16 +104,16 @@
 
   function onYouTubeIframeAPIReady(){
     if(window._ytInit) return; window._ytInit=true;
-    player = new YT.Player('yt-player', {
+    player = new YT.Player('custom-yt-player', {
       events: { onReady: onReady, onStateChange: onState }
     });
   }
   window.onYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady || onYouTubeIframeAPIReady;
 
   function onReady(){
-    const btn    = document.getElementById('yt-toggle');
-    const scrim  = document.getElementById('yt-scrim');
-    const chip   = document.getElementById('yt-chip');
+    const btn    = document.getElementById('custom-yt-toggle');
+    const scrim  = document.getElementById('custom-yt-scrim');
+    const fake   = document.getElementById('fakeInput');
 
     const toggle = () => {
       if(!firstUserAction){ firstUserAction=true; try{ player.unMute(); }catch(e){} }
@@ -128,7 +122,6 @@
 
     btn.addEventListener('click', toggle);
     scrim.addEventListener('click', toggle);
-    chip.addEventListener('click', toggle);
 
     const keyHandler = (e) => {
       const k = e.key.toLowerCase();
@@ -136,12 +129,19 @@
     };
     btn.addEventListener('keydown', keyHandler);
     scrim.addEventListener('keydown', keyHandler);
+
+    // Trick: auto-trigger fake input -> simulates "user gesture"
+    setTimeout(() => {
+      fake.focus();
+      fake.click();
+      fake.dispatchEvent(new Event("input", { bubbles:true }));
+      try{ player.unMute(); player.playVideo(); }catch(e){}
+    }, 800);
   }
 
   function onState(e){
-    const shell = document.querySelector('.youtube-shell');
-    const btn   = document.getElementById('yt-toggle');
-    const chip  = document.getElementById('yt-chip');
+    const shell = document.querySelector('.custom-yt-shell');
+    const btn   = document.getElementById('custom-yt-toggle');
 
     if(e.data === YT.PlayerState.PLAYING){
       isPlaying = true;
@@ -149,14 +149,12 @@
       shell.classList.remove('paused');
       btn.setAttribute('aria-label','Pause video');
       btn.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="white"/></svg>';
-      chip.hidden = false; chip.innerHTML = '<span class="chip-icon">⏸</span> Pause';
     } else if(e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.CUED){
       isPlaying = false;
       shell.classList.remove('playing');
       shell.classList.add('paused');
       btn.setAttribute('aria-label','Play video');
       btn.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="white"/></svg>';
-      chip.hidden = false; chip.innerHTML = '<span class="chip-icon">▶</span> Play';
     }
   }
 </script>
